@@ -312,7 +312,7 @@ with tab2:
     search_col, info_col = st.columns([1, 1], gap="large")
 
     with search_col:
-        query = st.text_input("Search for a song", placeholder="e.g. bohemian rhapsody")
+        query = st.text_input("Search for a song", placeholder="e.g. dear god")
 
         if query:
             mask = df["song_name"].str.lower().str.contains(query.lower(), na=False)
