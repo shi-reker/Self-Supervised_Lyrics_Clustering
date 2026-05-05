@@ -3,14 +3,14 @@ import pandas as pd
 import numpy as np
 import random
 
-# ── Page config ───────────────────────────────────────────────────────────────
+# Conf
 st.set_page_config(
     page_title="Lyric Clusters",
     page_icon="🎵",
     layout="wide",
 )
 
-# ── Styling ───────────────────────────────────────────────────────────────────
+# Styling
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
@@ -220,13 +220,12 @@ hr { border-color: #1e1e1e; }
 """, unsafe_allow_html=True)
 
 
-# ── Data loading ──────────────────────────────────────────────────────────────
+# Load Data
 @st.cache_data
-def load_data(path="lyrics-dataset/clustered_meta.csv"):
+def load_data(path="/home/esa/projects/lyrics-dataset/clustered_meta.csv"):
     df = pd.read_csv(path)
     df["cluster"] = df["cluster"].astype(int)
     return df
-
 
 try:
     df = load_data()
@@ -237,15 +236,14 @@ except FileNotFoundError:
 n_clusters = df["cluster"].nunique()
 cluster_ids = sorted(df["cluster"].unique())
 
-# ── Hero ──────────────────────────────────────────────────────────────────────
+# Title
 st.markdown("""
 <div class="hero">
     <h1>Lyric Clusters</h1>
-    <p>contrastive learning · bi-lstm encoder · k-means clustering</p>
 </div>
 """, unsafe_allow_html=True)
 
-# ── Top metrics ───────────────────────────────────────────────────────────────
+# Cluster Stats
 m1, m2, m3, m4 = st.columns(4)
 m1.metric("Total Songs", f"{len(df):,}")
 m2.metric("Clusters", n_clusters)
@@ -254,12 +252,11 @@ m4.metric("Embedding Dim", "64")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# ── Tabs ──────────────────────────────────────────────────────────────────────
+# Tabs
 tab1, tab2 = st.tabs(["CLUSTER EXPLORER", "SONG SEARCH"])
 
-# ════════════════════════════════════════════════════════════════════════════════
-# TAB 1 — Cluster Explorer
-# ════════════════════════════════════════════════════════════════════════════════
+
+# Tab 1
 with tab1:
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -300,16 +297,14 @@ with tab1:
     if st.button("🔀  Resample all clusters"):
         st.rerun()
 
-# ════════════════════════════════════════════════════════════════════════════════
-# TAB 2 — Song Search / Nearest Neighbors
-# ════════════════════════════════════════════════════════════════════════════════
+# Tab 2
 with tab2:
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # check embeddings are available
-    has_embeddings = "embedding" in pd.read_csv("lyrics-dataset/clustered_meta.csv").columns if True else False
+    # make sure embeddings are present in dataset
+    has_embeddings = "embedding" in pd.read_csv("/home/esa/projects/lyrics-dataset/clustered_data.csv").columns if True else False
     try:
-        df_full = pd.read_csv("lyrics-dataset/clustered_meta.csv")
+        df_full = pd.read_csv("/home/esa/projects/lyrics-dataset/clustered_data.csv")
         has_embeddings = "embedding" in df_full.columns
     except Exception:
         has_embeddings = False
@@ -326,7 +321,7 @@ with tab2:
             if matches.empty:
                 st.markdown("<p style='color:#555;font-size:0.85rem;'>No songs found.</p>", unsafe_allow_html=True)
             else:
-                # let user pick if multiple matches
+                # in case of multiple matches
                 song_options = (matches["song_name"] + " — " + matches["artist_name"]).tolist()
                 selected = st.selectbox("Select a song", song_options)
 
