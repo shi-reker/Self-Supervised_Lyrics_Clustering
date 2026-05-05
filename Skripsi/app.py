@@ -310,12 +310,19 @@ with tab2:
         has_embeddings = False
 
     search_col, info_col = st.columns([1, 1], gap="large")
+    selected = None
+    mask = pd.Series([False] * len(df))
+    matches = pd.DataFrame()
+    song_options = []
+    selected_idx = None
+    selected_row = None
+    selected_cluster = None
 
     with search_col:
-        query = st.text_input("Search for a song", placeholder="e.g. dear god")
+        query = st.text_input("Search for a song or artist", placeholder="e.g. dear god, eminem")
 
         if query:
-            mask = df["song_name"].str.lower().str.contains(query.lower(), na=False)
+            mask = df["song_name"].str.lower().str.contains(query.lower(), na=False) | df["artist_name"].str.lower().str.contains(query.lower(), na=False)
             matches = df[mask]
 
             if matches.empty:
@@ -341,13 +348,7 @@ with tab2:
                 """, unsafe_allow_html=True)
 
     with info_col:
-        if query and not df[df["song_name"].str.lower().str.contains(query.lower(), na=False)].empty:
-            matches = df[df["song_name"].str.lower().str.contains(query.lower(), na=False)]
-            song_options = (matches["song_name"] + " — " + matches["artist_name"]).tolist()
-            selected_idx = song_options.index(st.session_state.get("selected_song", song_options[0]) if "selected_song" in st.session_state else song_options[0]) if song_options else 0
-            selected_row = matches.iloc[0]
-            selected_cluster = int(selected_row["cluster"])
-
+        if selected:
             cluster_songs = df[df["cluster"] == selected_cluster]
             cluster_songs = cluster_songs[cluster_songs["song_name"] != selected_row["song_name"]]
             neighbors = cluster_songs.sample(min(8, len(cluster_songs)), random_state=42)
