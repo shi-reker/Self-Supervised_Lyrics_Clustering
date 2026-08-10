@@ -222,7 +222,7 @@ hr { border-color: #1e1e1e; }
 
 # Load Data
 @st.cache_data
-def load_data(path="lyrics-dataset/clustered_meta.csv"):
+def load_data(path="/home/esa/projects/lyrics-dataset/clustered_meta.csv"):
     df = pd.read_csv(path)
     df["cluster"] = df["cluster"].astype(int)
     return df
@@ -300,14 +300,6 @@ with tab1:
 # Tab 2
 with tab2:
     st.markdown("<br>", unsafe_allow_html=True)
-
-    # make sure embeddings are present in dataset
-    has_embeddings = "embedding" in pd.read_csv("lyrics-dataset/clustered_data.csv").columns if True else False
-    try:
-        df_full = pd.read_csv("lyrics-dataset/clustered_data.csv")
-        has_embeddings = "embedding" in df_full.columns
-    except Exception:
-        has_embeddings = False
 
     search_col, info_col = st.columns([1, 1], gap="large")
     selected = None
