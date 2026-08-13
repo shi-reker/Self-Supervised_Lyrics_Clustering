@@ -2,7 +2,7 @@ STRUKTUR FILE:
 - notebook: skripsi.ipynb
 - streamlit UI: app.py
 - data siap training: paired_datase.npz
-- data setelah clustering: clustered_meta.csv & clustered_data.csv
+- data setelah clustering: model 1(clustered_meta.csv & clustered_data.csv), model 2(clustered_meta_2.csv & clustered_data_2.csv)
 - hasil skor clustering: cluster_metrics.npz & cluster_metrics_2.npz
 
 HOW TO RUN:
